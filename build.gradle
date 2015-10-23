@@ -1,0 +1,48 @@
+group 'com.gs.am.aims'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'idea'
+
+allprojects{
+    ext.versions = [
+        spring: '4.1.6.RELEASE',
+        springBoot: '1.2.5.RELEASE',
+
+        swagger: '1.5.3',
+
+        groovy: '2.4.4'
+
+
+    ]
+}
+
+subprojects {
+    apply plugin: 'idea'
+    apply plugin: 'propdeps'
+    apply plugin: 'propdeps-idea'
+    afterEvaluate{
+        if(plugins.hasPlugin(JavaPlugin)){
+            sourceCompatibility = 1.8
+            targetCompatibility = 1.8
+        }
+    }
+}
+
+buildscript {
+    def areaRepo
+    areaRepo = {
+        mavenCentral()
+        maven {
+            // https://github.com/spring-projects/gradle-plugins/tree/master/propdeps-plugin
+            url 'http://repo.spring.io/plugins-release'
+        }
+    }
+    repositories areaRepo
+    project.allprojects {repositories areaRepo }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${versions.springBoot}"
+        // Needed by spring-boot-configuration-processor
+        classpath "org.springframework.build.gradle:propdeps-plugin:0.0.5"
+
+    }
+}
